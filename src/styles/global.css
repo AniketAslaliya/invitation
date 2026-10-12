@@ -294,8 +294,6 @@ a {
 
 /* The invitation is a phone experience. Larger screens show the same layout in a centred column. */
 .app {
-  --feather: 24vh;
-  --feather: 24svh;
   position: relative;
   width: 100%;
   max-width: 480px;
@@ -318,22 +316,29 @@ a {
   overflow: hidden;
 }
 
-/* Every later section dissolves over the previous one: it starts a feather-height early and its
-   top edge fades in through a gradient mask, so two images melt together instead of meeting at a line. */
+/* Sections follow each other with no overlap; seams fade each edge into a colour shared with the
+   neighbouring section, so the page reads as one continuous surface. */
 .flow {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
+  overflow: hidden;
 }
-.flow-blend {
-  margin-top: calc(-1 * var(--feather));
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, 0.35) calc(var(--feather) * 0.45), #000 var(--feather));
-  mask-image: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, 0.35) calc(var(--feather) * 0.45), #000 var(--feather));
+.seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 11vh;
+  height: 11svh;
+  z-index: 8;
+  pointer-events: none;
+}
+.seam-top {
+  top: -1px;
+}
+.seam-bottom {
+  bottom: -1px;
 }
 .flow-inner {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
   transform-origin: 50% 40%;
   will-change: transform, opacity;
 }
@@ -524,12 +529,10 @@ a {
 
 .paper {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(56px + var(--safe-top)) 22px calc(48px + var(--safe-bottom));
+  padding: calc(11svh + 16px + var(--safe-top)) 22px calc(11svh + 16px + var(--safe-bottom));
   color: var(--ink);
   text-align: center;
   background-color: var(--parchment);
@@ -687,12 +690,10 @@ a {
 /* ---------------------------------------------------------------- celebrations list */
 
 .timeline-screen {
-  min-height: 100vh;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: calc(48px + var(--safe-top)) 22px calc(40px + var(--safe-bottom));
+  padding: calc(11svh + 12px + var(--safe-top)) 22px calc(11svh + 12px + var(--safe-bottom));
   text-align: center;
   background:
     radial-gradient(ellipse 90% 45% at 50% 0%, rgba(199, 155, 81, 0.14), transparent 70%),
@@ -747,8 +748,8 @@ a {
 
 .ceremony {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(min(94vw, 451px, 62vh) + 30vh);
+  height: calc(min(94vw, 451px, 62svh) + 30svh);
   background: var(--deep);
 }
 .ceremony .stage {
@@ -777,43 +778,6 @@ a {
     0 30px 60px -18px rgba(0, 0, 0, 0.8);
 }
 
-/* Gold light sweeping across an invitation as it arrives. */
-.shimmer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.shimmer-band {
-  position: absolute;
-  top: -10%;
-  bottom: -10%;
-  left: 0;
-  width: 70%;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 238, 196, 0.08) 38%, rgba(255, 236, 190, 0.55) 50%, rgba(255, 238, 196, 0.08) 62%, transparent 80%);
-  mix-blend-mode: screen;
-  transform: translateX(-170%);
-  will-change: transform;
-}
-
-/* Warm halo around lanterns and diyas; flicker + scroll intensity are set per frame. */
-.flame-glow {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: screen;
-  background: radial-gradient(circle, rgba(255, 214, 140, 0.62) 0%, rgba(255, 170, 70, 0.26) 34%, rgba(255, 140, 40, 0) 70%);
-  will-change: transform, opacity;
-}
-.flame-glow.strip {
-  border-radius: 0;
-  background: radial-gradient(ellipse 50% 50% at 50% 55%, rgba(255, 200, 110, 0.5), rgba(255, 150, 50, 0.16) 45%, transparent 75%);
-}
-
 /* ---------------------------------------------------------------- full-screen artwork (story, closing) */
 
 .art-screen {
@@ -831,11 +795,9 @@ a {
 
 .location {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  padding: calc(18px + var(--safe-top)) 14px calc(24px + var(--safe-bottom));
+  padding: calc(11svh + var(--safe-top)) 14px calc(11svh + 8px + var(--safe-bottom));
   background: var(--burgundy-deep);
 }
 .location .arch-cap {
@@ -984,4 +946,13 @@ a {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* The hero's seam sits under its buttons. */
+.hero-pin > .seam-bottom {
+  z-index: 5;
+  height: 8svh;
+}
+.hero-actions {
+  z-index: 9;
 }

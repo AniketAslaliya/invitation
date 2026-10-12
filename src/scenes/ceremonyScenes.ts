@@ -105,23 +105,25 @@ function engagement(side: number): SceneDef {
 }
 
 function mandap(side: number): SceneDef {
-  const jasmine: LayerSpec = {
-    id: 'jasmine',
+  // Jasmine strings hang across the full width: two curtains, the right one mirrored.
+  const jasmine = (which: 'l' | 'r'): LayerSpec => ({
+    id: `jasmine-${which}`,
     src: ART.ornament('jasmine-strands.svg'),
     aspect: 1,
-    parallax: 0.3,
+    flipX: which === 'r',
+    parallax: which === 'l' ? 0.3 : 0.26,
     scrollFY: 0.18,
-    sway: { x: 0.01, speed: 0.6 },
+    sway: { x: 0.01, speed: 0.6, phase: which === 'l' ? 0 : 1.2 },
     layout: (W, H) => {
-      const p = portrait(W, H);
-      const w = p ? W * 0.62 : Math.min(W * 0.2, H * 0.4);
-      // Hangs at the outer edge beside the card on desktop (never over the text); top-left on phones.
-      return { x: p ? -W / 2 + w * 0.3 : side * (W / 2 - w * 0.36), y: -H / 2 + w * (p ? 0.34 : 0.22), w };
+      const w = W * 0.56;
+      const dir = which === 'l' ? -1 : 1;
+      return { x: dir * (W / 2 - w / 2 + W * 0.02), y: -H / 2 + w * 0.26, w };
     },
-  };
+  });
+  const s1 = side || 1; // phones: first lantern on the left, second on the right
   return {
     back: [backdrop('mandap'), arcade('mandap', side)],
-    front: [jasmine, lantern('lantern-a', 0.42 * -side, 0.05, 1, 0.38, 0), lantern('lantern-b', 0.3 * side, -0.08, 0.72, 0.28, 1.7)],
+    front: [jasmine('l'), jasmine('r'), lantern('lantern-a', 0.42 * -s1, 0.05, 1, 0.38, 0), lantern('lantern-b', 0.3 * s1, -0.08, 0.72, 0.28, 1.7)],
     particles: petalsOf([ART.ornament('petal-jasmine.svg')], { size: [14, 26], count: { mobile: 6, desktop: 12 } }),
   };
 }
@@ -193,7 +195,7 @@ function garba(side: number): SceneDef {
   };
   return {
     back: [backdrop('garba'), arcade('garba', side), lights],
-    front: [lantern('lantern-a', 0.42 * -side, 0.02, 1, 0.38, 0.5), lantern('lantern-b', 0.33 * side, -0.1, 0.7, 0.28, 2.1), dandiya],
+    front: [lantern('lantern-a', -0.42 * (side || 1), 0.02, 1, 0.38, 0.5), lantern('lantern-b', 0.33 * (side || 1), -0.1, 0.7, 0.28, 2.1), dandiya],
     particles: petalsOf([ART.ornament('sparkle.svg')], { size: [10, 26], speed: [10, 24], rise: true, spin: 0, drift: 20, opacity: [0.5, 0.95], count: { mobile: 10, desktop: 18 } }),
   };
 }

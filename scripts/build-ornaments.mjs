@@ -102,7 +102,7 @@ function arcade(name, c) {
     { x: 640, width: 520 },
     { x: 1290, width: 420 },
   ];
-  const base = 1010;
+  const base = h + 20; // arches run past the bottom edge: no floor line between stacked scenes
   const openings = arches
     .map((a) => archPath(a.x, base, a.width, a.width === 520 ? 470 : 520, a.width === 520 ? 300 : 250))
     .join(' ');
@@ -150,8 +150,6 @@ function arcade(name, c) {
       <stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/>
     </radialGradient>`;
   const body = `<path d="${wall}" fill="url(#wall)" fill-rule="evenodd"/>${jaliBand}${cornice}${pillars}${trims}
-    <rect x="0" y="${base}" width="${w}" height="${h - base}" fill="${c.shadow}" opacity=".8"/>
-    <rect x="0" y="${base}" width="${w}" height="6" fill="${c.trim}" opacity=".9"/>
     <path d="${wall}" fill="url(#vignette)" fill-rule="evenodd"/>`;
   write(`arcade-${name}.svg`, svg(w, h, body, defs));
 }
