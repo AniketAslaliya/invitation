@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="607" height="1044" viewBox="0 0 607 1044"><defs><filter id="sh" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter>
+    <linearGradient id="velvet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a0f22"/><stop offset="1" stop-color="#2c0510"/></linearGradient></defs>
+    <rect x="12" y="16" width="583" height="1020" fill="#000" opacity=".55" filter="url(#sh)"/>
+    <rect x="3" y="3" width="601" height="1038" fill="url(#velvet)" stroke="#c79b51" stroke-width="2.4"/>
+    <rect x="11" y="11" width="585" height="1022" fill="none" stroke="#e9c889" stroke-width="1" opacity=".75"/>
+    <g transform="translate(11 11)"><path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="#e9c889"/><circle r="3" fill="#7a1022"/></g><g transform="translate(596 11)"><path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="#e9c889"/><circle r="3" fill="#7a1022"/></g><g transform="translate(11 1033)"><path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="#e9c889"/><circle r="3" fill="#7a1022"/></g><g transform="translate(596 1033)"><path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="#e9c889"/><circle r="3" fill="#7a1022"/></g></svg>

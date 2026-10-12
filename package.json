@@ -1,0 +1,33 @@
+{
+  "name": "prutha-jatin-invitation",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "assets": "python scripts/prepare_hero.py && python scripts/prepare_envelope.py && python scripts/prepare_sections.py"
+  },
+  "dependencies": {
+    "@fontsource/cinzel": "^5.1.0",
+    "@fontsource/cormorant-garamond": "^5.1.0",
+    "@fontsource/pinyon-script": "^5.1.0",
+    "framer-motion": "^11.11.17",
+    "lenis": "^1.1.18",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.170.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "playwright-core": "^1.49.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
