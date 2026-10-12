@@ -1,5 +1,4 @@
 import { MotionConfig } from 'framer-motion';
-import { useEffect } from 'react';
 import { CeremonySection } from './components/CeremonySection/CeremonySection';
 import { ClosingInvitation } from './components/ClosingInvitation/ClosingInvitation';
 import { CoupleStory } from './components/CoupleStory/CoupleStory';
@@ -8,51 +7,52 @@ import { InvitationLetter } from './components/InvitationLetter/InvitationLetter
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
 import { LocationSection } from './components/LocationSection/LocationSection';
 import { MusicController } from './components/MusicController/MusicController';
-import { Navigation, ScrollProgress } from './components/Navigation/Navigation';
-import { RoyalHero } from './components/RoyalHero/RoyalHero';
+import { ScrollProgress } from './components/Navigation/Navigation';
+import { FlowSection } from './components/FlowSection/FlowSection';
+import { HERO_HOLD, RoyalHero } from './components/RoyalHero/RoyalHero';
 import { WeddingTimeline } from './components/WeddingTimeline/WeddingTimeline';
 import { ceremonies } from './data/ceremonies';
-import { CapabilitiesProvider, useCaps } from './lib/capabilities';
-import { disableSmoothScroll, enableSmoothScroll } from './lib/scroll';
+import { CapabilitiesProvider } from './lib/capabilities';
 
-function SmoothScroll() {
-  const { mode } = useCaps();
-  useEffect(() => {
-    if (mode !== 'webgl') return;
-    enableSmoothScroll();
-    return disableSmoothScroll;
-  }, [mode]);
-  return null;
-}
-
+/**
+ * One continuous story: the envelope is the only pinned moment; every later screen dissolves into
+ * the next through a feathered overlap instead of sliding over it like a separate card.
+ */
 function Experience() {
-  const bookends = { before: '#4a0c26', after: '#2c0510' };
+  let i = 1;
   return (
     <>
-      <a className="skip-link" href="#invitation">
-        Skip to invitation
-      </a>
       <LoadingScreen />
-      <SmoothScroll />
       <ScrollProgress />
-      <Navigation />
-      <main>
-        <RoyalHero />
-        <InvitationLetter />
-        <CoupleStory />
-        <Countdown />
-        <WeddingTimeline />
-        {ceremonies.map((c, i) => (
-          <CeremonySection
-            key={c.id}
-            ceremony={c}
-            index={i}
-            prevDeep={i === 0 ? bookends.before : ceremonies[i - 1].theme.deep}
-            nextDeep={i === ceremonies.length - 1 ? bookends.after : ceremonies[i + 1].theme.deep}
-          />
+      <main className="app">
+        <section id="top" className="hero-track" aria-label="Opening the invitation" style={{ height: `${(1 + HERO_HOLD) * 100}svh` }}>
+          <div className="hero-pin">
+            <RoyalHero />
+          </div>
+        </section>
+        <FlowSection id="invitation" index={i++} label="Wedding invitation">
+          <InvitationLetter />
+        </FlowSection>
+        <FlowSection id="story" index={i++} label="Our story">
+          <CoupleStory />
+        </FlowSection>
+        <FlowSection id="countdown" index={i++} label="Countdown">
+          <Countdown />
+        </FlowSection>
+        <FlowSection id="celebrations" index={i++} label="The celebrations">
+          <WeddingTimeline />
+        </FlowSection>
+        {ceremonies.map((c) => (
+          <FlowSection key={c.id} id={`event-${c.id}`} index={i++} label={c.title}>
+            <CeremonySection ceremony={c} />
+          </FlowSection>
         ))}
-        <LocationSection />
-        <ClosingInvitation />
+        <FlowSection id="location" index={i++} label="Venue">
+          <LocationSection />
+        </FlowSection>
+        <FlowSection id="closing" index={i++} label="With love">
+          <ClosingInvitation />
+        </FlowSection>
       </main>
       <MusicController />
     </>

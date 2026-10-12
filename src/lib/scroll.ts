@@ -28,6 +28,7 @@ export function scrollToTarget(target: string | HTMLElement | number, opts: { in
   }
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const behavior: ScrollBehavior = reduce || opts.instant ? 'auto' : 'smooth';
-  if (typeof el === 'number') window.scrollTo({ top: el, behavior });
-  else el.scrollIntoView({ behavior, block: 'start' });
+  // Sections overlap through a feathered edge; land where the section fully covers the screen.
+  const top = typeof el === 'number' ? el : el.getBoundingClientRect().top + window.scrollY;
+  window.scrollTo({ top, behavior });
 }

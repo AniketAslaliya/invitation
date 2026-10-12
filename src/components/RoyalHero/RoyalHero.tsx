@@ -5,6 +5,7 @@ import { siteConfig } from '../../data/siteConfig';
 import { useCaps } from '../../lib/capabilities';
 import { ART } from '../../lib/media';
 import { scrollToTarget } from '../../lib/scroll';
+import { gsap, haptic } from '../../lib/gsap';
 import { useMediaQuery } from '../../lib/useMediaQuery';
 import { ParallaxStage, type StageApi } from '../../parallax/ParallaxStage';
 import type { LayerAnim } from '../../parallax/types';
@@ -14,6 +15,9 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 const seg = (v: number, a: number, b: number) => clamp01((v - a) / (b - a));
+
+/** Screens of scrolling the hero stays pinned while the envelope opens. */
+export const HERO_HOLD = 1.6;
 
 type EnvelopeState = 'closed' | 'unsealed' | 'open';
 
@@ -27,7 +31,6 @@ type EnvelopeState = 'closed' | 'unsealed' | 'open';
 export function RoyalHero() {
   const { mode } = useCaps();
   const reduced = mode === 'static';
-  const sectionRef = useRef<HTMLElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const spritesRef = useRef<HTMLDivElement>(null);
@@ -43,7 +46,9 @@ export function RoyalHero() {
 
   // `tap` animates 0→1 when the envelope is tapped (seal + flap); `scroll` is the pinned-scroll progress.
   const tap = useMotionValue(0);
-  const { scrollYProgress: scroll } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
+  // The hero is the first pinned panel; it holds for HERO_HOLD screens of scrolling while the card comes out.
+  const { scrollY } = useScroll();
+  const scroll = useTransform(scrollY, (y) => clamp01(y / (HERO_HOLD * window.innerHeight)));
   // The flap is open if tapped, or once the guest has scrolled a little.
   const flap = useTransform([tap, scroll], ([t, s]: number[]) => Math.max(t, seg(s, 0, 0.14)));
 
@@ -88,10 +93,13 @@ export function RoyalHero() {
     if (sprites) sprites.style.opacity = reduced || f === 0 ? '0' : String(1 - fade);
     const angle = easeInOut(seg(f, 0.25, 1)) * 180;
     if (flapRef.current) {
-      // perspective() lives on the flap itself: the faded parent flattens inherited 3D context.
-      const persp = Math.max(600, (overlayRef.current?.offsetWidth ?? 500) * 2.4);
-      flapRef.current.style.transform = `perspective(${persp}px) rotateX(${angle}deg)`;
-      flapRef.current.style.zIndex = angle < 90 ? '4' : '1';
+      // A 2D fold about the envelope's top edge (identical on iOS and Android): the flap shortens,
+      // passes the hinge, and opens out upward showing its maroon lining — tip pointing up.
+      const c = Math.cos((angle * Math.PI) / 180);
+      const fold = Math.sign(c || 1) * Math.max(0.02, Math.abs(c));
+      flapRef.current.style.transform = `scaleY(${fold})`;
+      flapRef.current.dataset.side = c >= 0 ? 'front' : 'back';
+      flapRef.current.style.zIndex = c >= 0 ? '4' : '1';
     }
     if (cardRef.current) {
       cardRef.current.style.top = `${G.card.topStart + (G.card.topFinal - G.card.topStart) * cardT}%`;
@@ -139,9 +147,43 @@ export function RoyalHero() {
     el.style.transform = `translate3d(${r.left}px, ${r.top}px, 0)`;
   }, []);
 
+  /** Rose petals burst out of the wax seal as it breaks (GSAP, removed when done). */
+  const burstPetals = () => {
+    const host = overlayRef.current;
+    if (!host || reduced) return;
+    const w = host.offsetWidth;
+    const cx = G.seal.left + G.seal.width / 2;
+    const cy = G.seal.top + G.seal.height / 2;
+    for (let n = 0; n < 16; n++) {
+      const img = document.createElement('img');
+      img.src = ART.petals[n % ART.petals.length];
+      img.alt = '';
+      img.className = 'burst-petal';
+      img.style.left = `${cx}%`;
+      img.style.top = `${cy}%`;
+      img.style.width = `${w * (0.035 + Math.random() * 0.035)}px`;
+      host.appendChild(img);
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.5;
+      const dist = w * (0.18 + Math.random() * 0.32);
+      gsap
+        .timeline({ onComplete: () => img.remove() })
+        .fromTo(img, { xPercent: -50, yPercent: -50, scale: 0.2, opacity: 1, rotation: Math.random() * 360 }, {
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist,
+          scale: 1,
+          rotation: `+=${(Math.random() - 0.5) * 540}`,
+          duration: 0.9 + Math.random() * 0.4,
+          ease: 'power3.out',
+        })
+        .to(img, { y: `+=${w * 0.25}`, opacity: 0, duration: 1.1, ease: 'power1.in' }, '>-0.15');
+    }
+  };
+
   const open = () => {
     if (state !== 'closed') return;
     setState('unsealed');
+    haptic([10, 40, 18]);
+    burstPetals();
     animate(tap, 1, { duration: reduced ? 0.3 : 1.6, ease: 'easeInOut' });
   };
   const reset = () => {
@@ -154,8 +196,7 @@ export function RoyalHero() {
   const { bride, groom } = siteConfig.couple;
 
   return (
-    <section ref={sectionRef} className="hero" id="top" aria-label="The Palace Awakens">
-      <div ref={stickyRef} className="hero-sticky">
+    <div ref={stickyRef} className="hero">
       <ParallaxStage back={heroLayers} particles={petals} anims={anims} apiRef={apiRef} onFrame={onFrame} eager camera={1}>
         <div className="hero-veil" />
         <div ref={overlayRef} className="envelope" style={{ visibility: 'hidden' }}>
@@ -234,7 +275,14 @@ export function RoyalHero() {
             </motion.span>
           </motion.p>
         )}
-        <button type="button" className="btn-royal" onClick={() => scrollToTarget('#invitation')}>
+        <button
+          type="button"
+          className="btn-royal"
+          onClick={() => {
+            haptic();
+            scrollToTarget('#invitation');
+          }}
+        >
           Enter the Invitation <ChevronDown aria-hidden="true" />
         </button>
         {state === 'open' && (
@@ -246,8 +294,7 @@ export function RoyalHero() {
       <p className="sr-only" aria-live="polite">
         {state === 'open' ? `The envelope is open: ${bride} weds ${groom}.` : ''}
       </p>
-      </div>
-    </section>
+    </div>
   );
 }
 

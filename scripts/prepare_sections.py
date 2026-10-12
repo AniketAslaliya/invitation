@@ -63,7 +63,11 @@ def story():
         x1, y1 = min(xs.max() + 1 + pad, w), min(ys.max() + 1 + pad, h)
         # Soft drop shadow baked under the photo so it reads as lifted paper while it drifts.
         a = soft[y0:y1, x0:x1]
-        shadow = np.roll(np.roll(cv2.GaussianBlur(m[y0:y1, x0:x1], (0, 0), 22), 16, axis=0), 8, axis=1) * 0.5
+        # Offset the shadow down/right without wrapping (np.roll wrapped a stripe onto the far edge).
+        blurred = cv2.GaussianBlur(m[y0:y1, x0:x1], (0, 0), 22)
+        shadow = np.zeros_like(blurred)
+        shadow[16:, 8:] = blurred[:-16, :-8]
+        shadow *= 0.5
         alpha = a + shadow * (1 - a)
         rgb = img[y0:y1, x0:x1] * (a / np.maximum(alpha, 1e-4))[..., None] + np.array([40, 18, 10], np.float32) * (1 - a / np.maximum(alpha, 1e-4))[..., None]
         out = rgba(rgb, alpha)

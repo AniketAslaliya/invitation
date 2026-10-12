@@ -24,15 +24,15 @@ function query(q: string) {
 
 function detect(forceDom: boolean): Omit<Caps, 'demote'> {
   const reducedMotion = query('(prefers-reduced-motion: reduce)');
-  const isMobile = !query('(min-width: 900px)');
+  const isMobile = true;
   const override = new URLSearchParams(window.location.search).get('render') as RenderMode | null;
   if (override === 'webgl' && !forceDom) return { mode: 'webgl', reducedMotion, isMobile };
   if (override === 'dom' || override === 'static') return { mode: override, reducedMotion, isMobile };
   if (reducedMotion) return { mode: 'static', reducedMotion, isMobile };
-  const desktopPointer = query('(hover: hover) and (pointer: fine)') && !isMobile;
-  const lowPower = (navigator.hardwareConcurrency || 8) <= 2;
-  if (!forceDom && desktopPointer && !lowPower && webglAvailable()) return { mode: 'webgl', reducedMotion, isMobile };
-  return { mode: 'dom', reducedMotion, isMobile };
+  // The invitation is designed for phones: every device gets the light, scroll-driven layered
+  // renderer (no cursor effects). WebGL stays available only via ?render=webgl for experiments.
+  void webglAvailable;
+  return { mode: 'dom', reducedMotion, isMobile: true };
 }
 
 export function CapabilitiesProvider({ children }: { children: ReactNode }) {
