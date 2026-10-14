@@ -7,7 +7,6 @@ dist
 # The site uses the optimised copies in public/media; keep originals locally only.
 Groom/
 groom-new-image/
-
 # local tooling
 .asset-debug
 .vercel
