@@ -1,0 +1,64 @@
+{
+  "events/engagement-full": {
+    "w": 3375,
+    "h": 6000,
+    "widths": [
+      720,
+      1080,
+      1440
+    ]
+  },
+  "events/mandap-full": {
+    "w": 3375,
+    "h": 6000,
+    "widths": [
+      720,
+      1080,
+      1440
+    ]
+  },
+  "events/haldi-full": {
+    "w": 3375,
+    "h": 6000,
+    "widths": [
+      720,
+      1080,
+      1440
+    ]
+  },
+  "events/garba-full": {
+    "w": 3375,
+    "h": 6000,
+    "widths": [
+      720,
+      1080,
+      1440
+    ]
+  },
+  "events/wedding-full": {
+    "w": 3375,
+    "h": 6000,
+    "widths": [
+      720,
+      1080,
+      1440
+    ]
+  },
+  "story/page": {
+    "w": 941,
+    "h": 1672,
+    "widths": [
+      720,
+      941
+    ]
+  },
+  "closing/couple": {
+    "w": 2941,
+    "h": 5225,
+    "widths": [
+      720,
+      1200,
+      1600
+    ]
+  }
+}

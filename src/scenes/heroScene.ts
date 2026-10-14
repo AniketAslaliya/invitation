@@ -110,7 +110,7 @@ export const heroLayers: LayerSpec[] = [
 
 export const petals: ParticleSpec = {
   textures: ART.petals,
-  count: { mobile: 7, desktop: 14 },
+  count: { mobile: 5, desktop: 10 },
   size: [16, 40],
   speed: [26, 52],
   drift: 36,

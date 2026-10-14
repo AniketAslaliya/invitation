@@ -1,5 +1,4 @@
 import { MotionConfig } from 'framer-motion';
-import type { ReactNode } from 'react';
 import { CeremonySection } from './components/CeremonySection/CeremonySection';
 import { ClosingInvitation } from './components/ClosingInvitation/ClosingInvitation';
 import { CoupleStory } from './components/CoupleStory/CoupleStory';
@@ -9,55 +8,53 @@ import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
 import { LocationSection } from './components/LocationSection/LocationSection';
 import { MusicController } from './components/MusicController/MusicController';
 import { ScrollProgress } from './components/Navigation/Navigation';
-import { FlowSection } from './components/FlowSection/FlowSection';
+import { Page } from './components/Page/Page';
 import { HERO_HOLD, RoyalHero } from './components/RoyalHero/RoyalHero';
 import { WeddingTimeline } from './components/WeddingTimeline/WeddingTimeline';
 import { ceremonies } from './data/ceremonies';
 import { CapabilitiesProvider } from './lib/capabilities';
 
-// Colour each screen ends on. The next screen begins from the same colour, so neighbours join
-// seamlessly without overlapping each other's content.
-const HERO_EDGE = '#2a060d'; // dark rose foliage at the foot of the palace scene
-const PARCHMENT_EDGE = '#efdcb4';
-const DEEP = '#26050e';
-
-interface Screen {
-  id: string;
-  label: string;
-  edge: string;
-  node: ReactNode;
-}
-
 /**
- * One continuous story: the envelope is the only pinned moment; every later screen follows directly
- * on, joined to its neighbours by matching edge colours.
+ * One page per screen. Native scroll-snap moves exactly one page per swipe (identical on iOS and
+ * Android, no scroll-jacking library). The envelope has two stops — closed, then open — and the card
+ * is drawn out during the glide between them.
  */
 function Experience() {
-  const screens: Screen[] = [
-    { id: 'invitation', label: 'Wedding invitation', edge: PARCHMENT_EDGE, node: <InvitationLetter /> },
-    { id: 'story', label: 'Our story', edge: PARCHMENT_EDGE, node: <CoupleStory /> },
-    { id: 'countdown', label: 'Countdown', edge: PARCHMENT_EDGE, node: <Countdown /> },
-    { id: 'celebrations', label: 'The celebrations', edge: '#3a0a24', node: <WeddingTimeline /> },
-    ...ceremonies.map((c) => ({ id: `event-${c.id}`, label: c.title, edge: c.theme.deep, node: <CeremonySection ceremony={c} /> })),
-    { id: 'location', label: 'Venue', edge: DEEP, node: <LocationSection /> },
-    { id: 'closing', label: 'With love', edge: '', node: <ClosingInvitation /> },
-  ];
   return (
     <>
       <LoadingScreen />
       <ScrollProgress />
       <main className="app">
         <section id="top" className="hero-track" aria-label="Opening the invitation" style={{ height: `${(1 + HERO_HOLD) * 100}svh` }}>
+          <span className="snap-stop" style={{ top: 0 }} aria-hidden="true" />
+          <span className="snap-stop" style={{ top: `${HERO_HOLD * 100}svh` }} aria-hidden="true" />
           <div className="hero-pin">
             <RoyalHero />
-            <div className="seam seam-bottom" style={{ background: `linear-gradient(to top, ${HERO_EDGE}, transparent)` }} aria-hidden="true" />
           </div>
         </section>
-        {screens.map((sc, i) => (
-          <FlowSection key={sc.id} id={sc.id} label={sc.label} from={i === 0 ? HERO_EDGE : screens[i - 1].edge} edge={sc.edge || undefined}>
-            {sc.node}
-          </FlowSection>
+        <Page id="invitation" label="Wedding invitation">
+          <InvitationLetter />
+        </Page>
+        <Page id="story" label="Our story">
+          <CoupleStory />
+        </Page>
+        <Page id="countdown" label="Countdown">
+          <Countdown />
+        </Page>
+        <Page id="celebrations" label="The celebrations">
+          <WeddingTimeline />
+        </Page>
+        {ceremonies.map((c) => (
+          <Page key={c.id} id={`event-${c.id}`} label={c.title}>
+            <CeremonySection ceremony={c} />
+          </Page>
         ))}
+        <Page id="location" label="Venue">
+          <LocationSection />
+        </Page>
+        <Page id="closing" label="With love">
+          <ClosingInvitation />
+        </Page>
       </main>
       <MusicController />
     </>

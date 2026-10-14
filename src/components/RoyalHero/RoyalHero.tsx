@@ -17,7 +17,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 const seg = (v: number, a: number, b: number) => clamp01((v - a) / (b - a));
 
 /** Screens of scrolling the hero stays pinned while the envelope opens. */
-export const HERO_HOLD = 1.6;
+export const HERO_HOLD = 1;
 
 type EnvelopeState = 'closed' | 'unsealed' | 'open';
 
@@ -184,7 +184,12 @@ export function RoyalHero() {
     setState('unsealed');
     haptic([10, 40, 18]);
     burstPetals();
-    animate(tap, 1, { duration: reduced ? 0.3 : 1.6, ease: 'easeInOut' });
+    // Flap opens, then the page glides to the next stop and the card is drawn out on the way.
+    animate(tap, 1, {
+      duration: reduced ? 0.3 : 1.3,
+      ease: 'easeInOut',
+      onComplete: () => scrollToTarget(window.innerHeight * HERO_HOLD),
+    });
   };
   const reset = () => {
     tap.set(0);
@@ -265,7 +270,7 @@ export function RoyalHero() {
         )}
         {state === 'unsealed' && (
           <motion.p className="hero-hint scroll-hint" style={{ opacity: scrollHintOpacity }}>
-            Scroll to draw out the card
+            Swipe up to draw out the card
             <motion.span
               aria-hidden="true"
               animate={reduced ? undefined : { y: [0, 6, 0] }}
@@ -275,16 +280,18 @@ export function RoyalHero() {
             </motion.span>
           </motion.p>
         )}
-        <button
+        <motion.button
           type="button"
           className="btn-royal"
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           onClick={() => {
             haptic();
             scrollToTarget('#invitation');
           }}
         >
           Enter the Invitation <ChevronDown aria-hidden="true" />
-        </button>
+        </motion.button>
         {state === 'open' && (
           <button type="button" className="btn-quiet" onClick={reset} style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
             <RotateCcw size={13} aria-hidden="true" /> Seal it again

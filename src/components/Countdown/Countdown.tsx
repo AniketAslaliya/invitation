@@ -1,4 +1,3 @@
-import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { ceremonyById } from '../../data/ceremonies';
 import { COUNTDOWN_EVENT_ID } from '../../data/weddingEvents';
@@ -60,25 +59,17 @@ function useRemaining(target: number): Remaining | null {
 export function Countdown() {
   const event = ceremonyById(COUNTDOWN_EVENT_ID);
   const r = useRemaining(event.timestamp);
-  const reduce = useReducedMotion();
   const units: [string, number | undefined][] = [
     ['Days', r?.days],
     ['Hours', r?.hours],
     ['Minutes', r?.minutes],
     ['Seconds', r?.seconds],
   ];
-  const sway = reduce ? undefined : { rotate: [0, 1.6, 0], transition: { duration: 7, repeat: Infinity, ease: 'easeInOut' as const } };
 
   return (
     <div className="paper countdown" style={{ '--parchment-img': `url(${ART.parchment})` } as React.CSSProperties}>
-      <motion.img className="corner-branch left" src={ART.branchLeft} alt="" aria-hidden="true" animate={sway} />
-      <motion.img
-        className="corner-branch right"
-        src={ART.branchRight}
-        alt=""
-        aria-hidden="true"
-        animate={reduce ? undefined : { rotate: [0, -1.8, 0], transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' } }}
-      />
+      <img className="corner-branch left" src={ART.branchLeft} alt="" aria-hidden="true" />
+      <img className="corner-branch right" src={ART.branchRight} alt="" aria-hidden="true" />
       <div className="paper-content">
         <Reveal>
           <p className="eyebrow paper-eyebrow">Countdown</p>
@@ -92,14 +83,14 @@ export function Countdown() {
         {r?.done ? (
           <p className="countdown-done">The celebrations have begun — thank you for being part of our forever.</p>
         ) : (
-          <Reveal as="ul" className="countdown-grid" delay={0.1} aria-label="Time remaining until the wedding">
+          <ul className="countdown-grid" aria-label="Time remaining until the wedding">
             {units.map(([label, value]) => (
-              <li key={label} className="countdown-unit">
+              <li key={label} className="countdown-unit" data-anim="">
                 <FlipNumber value={value === undefined ? '--' : pad(value)} />
                 <span className="countdown-label">{label}</span>
               </li>
             ))}
-          </Reveal>
+          </ul>
         )}
         <Divider />
       </div>

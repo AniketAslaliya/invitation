@@ -33,15 +33,6 @@ html {
   position: relative;
   background: var(--burgundy-deep);
   -webkit-text-size-adjust: 100%;
-  text-rendering: optimizeLegibility;
-}
-
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
 }
 
 body {
@@ -316,31 +307,97 @@ a {
   overflow: hidden;
 }
 
-/* Sections follow each other with no overlap; seams fade each edge into a colour shared with the
-   neighbouring section, so the page reads as one continuous surface. */
-.flow {
-  position: relative;
-  overflow: hidden;
+/* ---------------------------------------------------------------- one page per screen */
+
+/* Native scroll-snap: each swipe moves exactly one page. Runs on the browser's own scroller, so it is
+   identical and smooth on iOS and Android with no JS involved. */
+html {
+  scroll-snap-type: y mandatory;
 }
-.seam {
+.page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.snap-stop {
   position: absolute;
   left: 0;
-  right: 0;
-  height: 11vh;
-  height: 11svh;
-  z-index: 8;
+  width: 1px;
+  height: 1px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   pointer-events: none;
 }
-.seam-top {
-  top: -1px;
+
+/* Full-page framed artwork: the whole image on one screen, never cropped; the artwork's own border
+   colours fill the space around it. One static image — no per-frame work. */
+.art-page {
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.seam-bottom {
-  bottom: -1px;
-}
-.flow-inner {
+.art-box {
   position: relative;
-  transform-origin: 50% 40%;
+  /* As large as the screen allows while keeping the artwork's proportions. */
+  width: min(100%, calc(100vh * var(--a)));
+  width: min(100%, calc(100svh * var(--a)));
+  aspect-ratio: var(--a);
+}
+.art-page-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Unframed photo (closing): fills the entire screen, centred. */
+.art-page.cover .art-box {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+.art-page.cover .art-page-img {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* Per-event decorative motion over the artwork (transform/opacity only). */
+.page-fx {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx-petal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: auto;
+  max-width: none;
+  visibility: hidden;
+  will-change: transform;
+}
+.fx-dust {
+  position: absolute;
+  width: 5.5%;
+  aspect-ratio: 1;
+  margin: -2.75% 0 0 -2.75%;
+  border-radius: 50%;
+  visibility: hidden;
+  background: radial-gradient(circle, #f6b000 0%, #f2a100 40%, rgba(242, 161, 0, 0) 70%);
   will-change: transform, opacity;
+}
+/* Haldi colours: turmeric, marigold, pink gulal. */
+.fx-dust.c1 {
+  background: radial-gradient(circle, #f57c00 0%, #ef6c00 40%, rgba(239, 108, 0, 0) 70%);
+}
+.fx-dust.c2 {
+  background: radial-gradient(circle, #e84f8a 0%, #d63f78 40%, rgba(214, 63, 120, 0) 70%);
 }
 
 /* ---------------------------------------------------------------- hero */
@@ -529,10 +586,12 @@ a {
 
 .paper {
   position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(11svh + 16px + var(--safe-top)) 22px calc(11svh + 16px + var(--safe-bottom));
+  padding: calc(48px + var(--safe-top)) 22px calc(40px + var(--safe-bottom));
   color: var(--ink);
   text-align: center;
   background-color: var(--parchment);
@@ -558,12 +617,24 @@ a {
   pointer-events: none;
   z-index: 2;
 }
+@keyframes sway-l {
+  50% {
+    transform: rotate(1.6deg);
+  }
+}
+@keyframes sway-r {
+  50% {
+    transform: rotate(-1.8deg);
+  }
+}
 .corner-branch.left {
+  animation: sway-l 7s ease-in-out infinite;
   left: -6%;
   width: 46%;
   transform-origin: 0 0;
 }
 .corner-branch.right {
+  animation: sway-r 8s ease-in-out infinite;
   right: -5%;
   width: 34%;
   transform-origin: 100% 0;
@@ -690,10 +761,12 @@ a {
 /* ---------------------------------------------------------------- celebrations list */
 
 .timeline-screen {
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: calc(11svh + 12px + var(--safe-top)) 22px calc(11svh + 12px + var(--safe-bottom));
+  padding: calc(40px + var(--safe-top)) 22px calc(32px + var(--safe-bottom));
   text-align: center;
   background:
     radial-gradient(ellipse 90% 45% at 50% 0%, rgba(199, 155, 81, 0.14), transparent 70%),
@@ -744,83 +817,43 @@ a {
   white-space: nowrap;
 }
 
-/* ---------------------------------------------------------------- ceremony screens */
+/* ---------------------------------------------------------------- location */
 
-.ceremony {
-  position: relative;
-  height: calc(min(94vw, 451px, 62vh) + 30vh);
-  height: calc(min(94vw, 451px, 62svh) + 30svh);
-  background: var(--deep);
-}
-.ceremony .stage {
-  position: absolute;
-  inset: 0;
-}
-.ceremony-art {
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  margin: auto;
-  /* As large as the phone allows, same proportion on every screen. */
-  width: min(94vw, 451px, 62vh);
-  height: min(94vw, 451px, 62vh);
-  width: min(94vw, 451px, 62svh);
-  height: min(94vw, 451px, 62svh);
-}
-.ceremony-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  box-shadow:
-    0 0 0 1px rgba(233, 200, 137, 0.7),
-    0 0 0 5px rgba(0, 0, 0, 0.25),
-    0 0 0 6px rgba(233, 200, 137, 0.35),
-    0 30px 60px -18px rgba(0, 0, 0, 0.8);
-}
-
-/* ---------------------------------------------------------------- full-screen artwork (story, closing) */
-
-.art-screen {
+/* The venue page fits exactly one screen on every phone: the map takes whatever height is left. */
+.location {
   position: relative;
   height: 100vh;
   height: 100svh;
-  background: var(--burgundy-deep);
-}
-.art-screen .stage {
-  position: absolute;
-  inset: 0;
-}
-
-/* ---------------------------------------------------------------- location */
-
-.location {
-  position: relative;
   display: flex;
   flex-direction: column;
-  padding: calc(11svh + var(--safe-top)) 14px calc(11svh + 8px + var(--safe-bottom));
+  padding: calc(10px + var(--safe-top)) 12px calc(14px + var(--safe-bottom));
   background: var(--burgundy-deep);
 }
 .location .arch-cap {
   display: block;
+  flex-shrink: 0;
   width: 100%;
-  height: clamp(70px, 22vw, 104px);
+  height: clamp(54px, 9svh, 96px);
   margin-bottom: -1px;
 }
 .location-body {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 10px 20px 28px;
+  padding: 4px 16px 14px;
   text-align: center;
   color: var(--ink);
   background-color: var(--parchment);
   background-image:
-    radial-gradient(ellipse at 50% 40%, rgba(255, 246, 225, 0.65), transparent 70%),
+    radial-gradient(ellipse at 50% 30%, rgba(255, 246, 225, 0.65), transparent 70%),
     linear-gradient(transparent, rgba(160, 110, 50, 0.12));
   border-left: 1.5px solid var(--gold);
   border-right: 1.5px solid var(--gold);
   border-bottom: 1.5px solid var(--gold);
+}
+.location-body .divider {
+  margin: clamp(6px, 1.4svh, 14px) auto;
 }
 .location-eyebrow {
   color: #8a5a2a;
@@ -831,9 +864,9 @@ a {
   font-weight: 400;
   color: var(--maroon);
   letter-spacing: 0.1em;
-  font-size: clamp(24px, 7vw, 30px);
+  font-size: clamp(21px, min(6.6vw, 3.4svh), 30px);
   line-height: 1.2;
-  margin: 10px 0 6px;
+  margin: 6px 0 4px;
 }
 .location-address {
   display: inline-flex;
@@ -857,9 +890,10 @@ a {
 }
 .location-map {
   position: relative;
+  flex: 1;
+  min-height: 150px;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border: 1px solid rgba(199, 155, 81, 0.8);
+  border: 1px solid rgba(199, 155, 81, 0.85);
   box-shadow: 0 0 0 4px rgba(199, 155, 81, 0.15);
   background: #e9dcc0;
   overflow: hidden;
@@ -870,15 +904,40 @@ a {
   width: 100%;
   height: 100%;
   border: 0;
-  /* Warm the map so it sits with the parchment. */
-  filter: sepia(0.35) saturate(0.9);
+  pointer-events: none;
+}
+/* Covers the map: swipes scroll the page, a tap opens the venue in the Maps app. */
+.map-open {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 10px;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.map-open-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  min-height: 36px;
+  background: rgba(36, 5, 13, 0.88);
+  color: var(--champagne);
+  border: 1px solid rgba(233, 200, 137, 0.7);
+  font-family: var(--font-caps);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 .location-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-top: 20px;
+  gap: 2px;
+  margin-top: clamp(10px, 1.8svh, 18px);
+  flex-shrink: 0;
 }
 .location-actions .btn-royal {
   width: 100%;
@@ -948,11 +1007,23 @@ a {
   }
 }
 
-/* The hero's seam sits under its buttons. */
-.hero-pin > .seam-bottom {
-  z-index: 5;
-  height: 8svh;
-}
 .hero-actions {
   z-index: 9;
+}
+
+
+
+/* Letter-by-letter headline reveal (GSAP, see Page.tsx). */
+[data-split] .ch {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* Touch feedback for list rows and secondary buttons (no hover on phones). */
+.timeline a:active,
+.btn-quiet:active {
+  transform: scale(0.98);
+}
+[data-split] .word {
+  white-space: nowrap;
 }

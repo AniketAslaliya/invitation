@@ -1,4 +1,5 @@
 import { Check, Copy, MapPin, Navigation } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { appleMapsUrl, directionsUrl, mapEmbedUrl, mapsSearchUrl, siteConfig, venueIsConfigured, venueQuery } from '../../data/siteConfig';
 import { haptic } from '../../lib/gsap';
@@ -41,7 +42,9 @@ export function LocationSection() {
       <ArchCap outside="var(--burgundy-deep)" />
       <div className="location-body">
         <Reveal>
-          <MapPin aria-hidden="true" size={26} color="var(--gold)" style={{ margin: '0 auto' }} />
+          <span data-anim="drop" style={{ display: 'inline-block' }}>
+            <MapPin aria-hidden="true" size={26} color="var(--gold)" />
+          </span>
           <p className="eyebrow location-eyebrow">The Venue</p>
         </Reveal>
         {ready ? (
@@ -60,22 +63,34 @@ export function LocationSection() {
             </Reveal>
             <Divider />
             {embed && (
-              <Reveal delay={0.12} className="location-map">
-                <iframe
-                  title={`Map showing ${v.name}`}
-                  src={embed}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
+              <Reveal className="location-map">
+                {/* Loads only when the guest reaches this page. It's a preview: a transparent layer on
+                    top keeps swipes moving between pages, and a tap opens the venue in the Maps app. */}
+                <iframe title={`Map showing ${v.name}`} src={embed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" tabIndex={-1} />
+                {pin && (
+                  <a className="map-open" href={pin} target="_blank" rel="noopener noreferrer" onClick={() => haptic()}>
+                    <span className="map-open-label">
+                      <MapPin aria-hidden="true" size={13} /> Open in Maps
+                    </span>
+                    <span className="sr-only">(Lion Valley Resort on Google Maps, opens a new tab)</span>
+                  </a>
+                )}
               </Reveal>
             )}
             <Reveal delay={0.16} className="location-actions">
               {dir && (
-                <a className="btn-royal" href={dir} target="_blank" rel="noopener noreferrer" onClick={() => haptic()}>
+                <motion.a
+                  className="btn-royal"
+                  href={dir}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => haptic()}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                >
                   <Navigation aria-hidden="true" /> Get Directions
                   <span className="sr-only">(opens Google Maps)</span>
-                </a>
+                </motion.a>
               )}
               <div className="location-secondary">
                 {apple && (

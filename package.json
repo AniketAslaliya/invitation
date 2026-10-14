@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "assets": "python scripts/prepare_hero.py && python scripts/prepare_envelope.py && python scripts/prepare_sections.py"
+    "assets": "python scripts/prepare_hero.py && python scripts/prepare_envelope.py && python scripts/prepare_new_art.py"
   },
   "dependencies": {
     "@fontsource/cinzel": "^5.1.0",
@@ -17,7 +17,6 @@
     "@gsap/react": "^2.1.1",
     "framer-motion": "^11.11.17",
     "gsap": "^3.12.5",
-    "lenis": "^1.1.18",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

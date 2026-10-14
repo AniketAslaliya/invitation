@@ -15,13 +15,15 @@ export function WeddingTimeline() {
       <Divider />
       <div className="timeline">
         {days.map((day) => (
-          <Reveal key={day}>
-            <h3 className="timeline-day">{day}</h3>
+          <div key={day}>
+            <h3 className="timeline-day" data-anim="">
+              {day}
+            </h3>
             <ul>
               {ceremonies
                 .filter((c) => c.dateLabel === day)
                 .map((c) => (
-                  <li key={c.id}>
+                  <li key={c.id} data-anim="">
                     <a
                       href={`#event-${c.id}`}
                       onClick={(e) => {
@@ -36,7 +38,7 @@ export function WeddingTimeline() {
                   </li>
                 ))}
             </ul>
-          </Reveal>
+          </div>
         ))}
       </div>
     </div>

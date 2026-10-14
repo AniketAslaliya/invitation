@@ -1,18 +1,19 @@
-import { ParallaxStage } from '../../parallax/ParallaxStage';
-import { CLOSING_ASPECT, closingScene } from '../../scenes/portraitScenes';
+import { ART } from '../../lib/media';
+import { CLOSING_PAGE_ASPECT, PAGE_EDGES } from '../../scenes/pageScenes';
+import { ArtPage } from '../ArtPage/ArtPage';
 
-/** Final screen: the couple's photograph fills the phone, framed by flowers and drifting petals. */
+/** Final page: the couple's photograph with their message, shown whole, petals drifting over it. */
 export function ClosingInvitation() {
   return (
-    <div className="art-screen" style={{ '--art-aspect': String(CLOSING_ASPECT) } as React.CSSProperties}>
-      <ParallaxStage back={closingScene.back} front={closingScene.front} particles={closingScene.particles} camera={0}>
-        <h2 className="sr-only">With love, Prutha and Jatin</h2>
-        {/* The words are part of the photograph; repeated here for screen readers. */}
-        <p className="sr-only">
-          Photograph of Prutha and Jatin embracing. With the blessings of our families, we heartily welcome you to be a part of our forever. With
-          love, Prutha and Jatin.
-        </p>
-      </ParallaxStage>
-    </div>
+    <ArtPage
+      src={ART.closing}
+      aspect={CLOSING_PAGE_ASPECT}
+      alt="Prutha and Jatin holding hands around a sunflower and red rose. With the blessings of our families, we heartily welcome you to be a part of our forever. With love, Prutha and Jatin."
+      edges={PAGE_EDGES.closing}
+      fx="closing"
+      cover
+    >
+      <h2 className="sr-only">With love, Prutha and Jatin</h2>
+    </ArtPage>
   );
 }
