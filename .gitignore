@@ -2,7 +2,6 @@
 node_modules
 dist
 *.tsbuildinfo
-
 # original full-resolution artwork (~190 MB, private source files).
 # The site uses the optimised copies in public/media; keep originals locally only.
 Groom/
