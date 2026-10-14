@@ -8,7 +8,6 @@ npm run dev      # http://localhost:5173
 npm run build    # production build in dist/
 npm run preview
 ```
-
 ## Deploy on Vercel
 
 1. Import the GitHub repo in Vercel (framework is detected as **Vite**; settings come from `vercel.json`).
