@@ -6,7 +6,6 @@ import { useCaps } from '../../lib/capabilities';
 import { ART } from '../../lib/media';
 import { scrollToTarget } from '../../lib/scroll';
 import { gsap, haptic } from '../../lib/gsap';
-import { useMediaQuery } from '../../lib/useMediaQuery';
 import { ParallaxStage, type StageApi } from '../../parallax/ParallaxStage';
 import type { LayerAnim } from '../../parallax/types';
 import { envelopeGeometry as G, heroLayers, petals, plateLayout, PLATE_H, PLATE_W } from '../../scenes/heroScene';
@@ -44,25 +43,24 @@ export function RoyalHero() {
   });
   const [state, setState] = useState<EnvelopeState>('closed');
 
-  // `tap` animates 0→1 when the envelope is tapped (seal + flap); `scroll` is the pinned-scroll progress.
+  // One opening timeline, 0 → 1: seal + flap (0–0.3) → card drawn out (0.28–0.6) → gentle zoom into
+  // the open-envelope artwork (0.6–0.95). It is driven by whichever is further along: a tap (played
+  // smoothly over time) or a swipe (the scroll glide to the next stop). Because both drive the same
+  // timeline, the card only ever comes out once — no jump, no second card.
   const tap = useMotionValue(0);
-  // The hero is the first pinned panel; it holds for HERO_HOLD screens of scrolling while the card comes out.
   const { scrollY } = useScroll();
   const scroll = useTransform(scrollY, (y) => clamp01(y / (HERO_HOLD * window.innerHeight)));
-  // The flap is open if tapped, or once the guest has scrolled a little.
-  const flap = useTransform([tap, scroll], ([t, s]: number[]) => Math.max(t, seg(s, 0, 0.14)));
+  const progress = useTransform([tap, scroll], ([t, s]: number[]) => Math.max(t, s));
 
-  // On phones the title shares the sky with the rising card, so it steps aside; on wide screens it stays.
-  const landscape = useMediaQuery('(min-aspect-ratio: 19/20)');
-  const titleOpacity = useTransform(flap, [0, 0.5], [1, landscape ? 1 : 0]);
-  const titleY = useTransform(flap, [0, 0.5], [0, landscape ? 0 : -16]);
-  const scrollHintOpacity = useTransform(scroll, [0, 0.12], [1, 0]);
+  // The title steps aside as the envelope opens, so the names never appear twice.
+  const titleOpacity = useTransform(progress, [0, 0.12], [1, 0]);
+  const titleY = useTransform(progress, [0, 0.12], [0, -16]);
+  const scrollHintOpacity = useTransform(progress, [0.3, 0.42], [1, 0]);
 
   const apply = useCallback(() => {
     const box = stickyRef.current;
     if (!box) return;
-    const f = flap.get();
-    const sc = scroll.get();
+    const p = progress.get();
     const W = box.clientWidth;
     const H = box.clientHeight;
     const base = plateLayout(W, H);
@@ -73,25 +71,27 @@ export function RoyalHero() {
     const [a2x, a2y] = at(G.hinge2);
     const s = G.openScale;
 
-    // The card is drawn out over the first half of the scroll, never before the flap is open.
-    const cardT = easeOut(Math.min(seg(sc, 0.08, 0.55), seg(f, 0.55, 1)));
-    // Then the view moves in until it becomes the open-envelope artwork.
-    const q = reduced ? 0 : easeInOut(seg(sc, 0.55, 0.92));
+    const flapT = seg(p, 0, 0.3);
+    const cardT = easeOut(seg(p, 0.28, 0.6));
+    // The view moves in until it exactly matches the open-envelope artwork, which then takes over.
+    const q = reduced ? 0 : easeInOut(seg(p, 0.6, 0.95));
     const m = s + (1 - s) * q;
     const ex = (1 - q) * (a1x - a2x);
     const ey = (1 - q) * (a1y - a2y);
     const k = m / s;
-    const fade = reduced ? seg(sc, 0.2, 0.7) : easeInOut(seg(sc, 0.6, 0.74));
+    // A quick dissolve (~0.3 s on tap): the two artworks place the seal slightly differently, so a
+    // long blend would show two seals.
+    const fade = reduced ? seg(p, 0.2, 0.7) : easeInOut(seg(p, 0.7, 0.78));
     anims.current['plate-open'] = reduced
       ? { dx: 0, dy: 0, scale: 1, opacity: fade }
       : { dx: a2x + m * (base.x - a2x) + ex - base.x, dy: a2y + m * (base.y - a2y) + ey - base.y, scale: m, opacity: fade };
     anims.current['plate-closed'] = reduced
       ? { dx: 0, dy: 0, scale: 1, opacity: 1 - fade }
-      : { dx: a2x + ex + k * (base.x - a1x) - base.x, dy: a2y + ey + k * (base.y - a1y) - base.y, scale: k, opacity: 1 - seg(sc, 0.74, 0.8) };
+      : { dx: a2x + ex + k * (base.x - a1x) - base.x, dy: a2y + ey + k * (base.y - a1y) - base.y, scale: k, opacity: 1 - seg(p, 0.78, 0.82) };
 
     const sprites = spritesRef.current;
-    if (sprites) sprites.style.opacity = reduced || f === 0 ? '0' : String(1 - fade);
-    const angle = easeInOut(seg(f, 0.25, 1)) * 180;
+    if (sprites) sprites.style.opacity = reduced || p === 0 ? '0' : String(1 - fade);
+    const angle = easeInOut(seg(flapT, 0.15, 1)) * 180;
     if (flapRef.current) {
       // A 2D fold about the envelope's top edge (identical on iOS and Android): the flap shortens,
       // passes the hinge, and opens out upward showing its maroon lining — tip pointing up.
@@ -105,32 +105,25 @@ export function RoyalHero() {
       cardRef.current.style.top = `${G.card.topStart + (G.card.topFinal - G.card.topStart) * cardT}%`;
     }
     if (glowRef.current) {
-      const g = f === 0 ? 0 : Math.sin(seg(f, 0, 0.6) * Math.PI);
+      const g = p === 0 ? 0 : Math.sin(seg(p, 0, 0.25) * Math.PI);
       glowRef.current.style.opacity = String(g);
       glowRef.current.style.transform = `scale(${1 + 0.06 * g})`;
     }
     if (reduced) apiRef.current?.invalidate();
-  }, [flap, scroll, reduced]);
+  }, [progress, reduced]);
 
   useEffect(() => {
     apply();
-    const a = flap.on('change', apply);
-    const b = scroll.on('change', apply);
+    const off = progress.on('change', apply);
     window.addEventListener('resize', apply);
     return () => {
-      a();
-      b();
+      off();
       window.removeEventListener('resize', apply);
     };
-  }, [apply, flap, scroll]);
+  }, [apply, progress]);
 
-  useMotionValueEvent(scroll, 'change', (v) => {
-    setState((st) => {
-      if (v > 0.9) return 'open';
-      if (st === 'open') return 'unsealed';
-      if (st === 'closed' && v > 0.14) return 'unsealed';
-      return st;
-    });
+  useMotionValueEvent(progress, 'change', (v) => {
+    setState(v > 0.9 ? 'open' : v > 0 ? 'unsealed' : 'closed');
   });
 
   const onFrame = useCallback((api: StageApi) => {
@@ -185,10 +178,12 @@ export function RoyalHero() {
     haptic([10, 40, 18]);
     burstPetals();
     // Flap opens, then the page glides to the next stop and the card is drawn out on the way.
+    // Play the whole opening smoothly, then settle the page on the open stop (no visual change).
     animate(tap, 1, {
-      duration: reduced ? 0.3 : 1.3,
-      ease: 'easeInOut',
-      onComplete: () => scrollToTarget(window.innerHeight * HERO_HOLD),
+      duration: reduced ? 0.4 : 3.6,
+      ease: 'linear',
+      // The picture is already fully open, so settle the page on the open stop instantly.
+      onComplete: () => scrollToTarget(window.innerHeight * HERO_HOLD, { instant: true }),
     });
   };
   const reset = () => {
@@ -254,7 +249,7 @@ export function RoyalHero() {
         </div>
       </ParallaxStage>
 
-      <motion.div className="hero-title" style={{ opacity: titleOpacity, y: titleY }} aria-hidden={state !== 'closed' && !landscape}>
+      <motion.div className="hero-title" style={{ opacity: titleOpacity, y: titleY }} aria-hidden={state !== 'closed'}>
         <p className="eyebrow">An Invitation to Celebrate Love</p>
         <h1 className="hero-names">
           {bride.toUpperCase()} <span className="amp">&amp;</span>{' '}{groom.toUpperCase()}
