@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { siteConfig } from '../../data/siteConfig';
-import { ART, preload } from '../../lib/media';
-import { pickSrc } from '../../parallax/engine';
+import { ART, pickSrc, preload } from '../../lib/media';
 
 /** Brief veil while the opening scene's artwork arrives (never longer than ~2.4s). */
 export function LoadingScreen() {

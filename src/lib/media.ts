@@ -4,6 +4,18 @@ const BASE = `${import.meta.env.BASE_URL}media/`;
 
 export const media = (path: string) => BASE + path;
 
+/** Picks the smallest variant that covers the rendered width at the device's pixel ratio (capped at 2). */
+export function pickSrc(src: Responsive, cssWidth: number): string {
+  if (typeof src === 'string') return src;
+  const need = cssWidth * Math.min(window.devicePixelRatio || 1, 2);
+  const widths = Object.keys(src)
+    .map(Number)
+    .sort((a, b) => a - b);
+  const w = widths.find((x) => x >= need) ?? widths[widths.length - 1];
+  return src[w];
+}
+
+
 /** `resp('hero/plate-open', [720, 1200])` → { 720: '.../plate-open-720.webp', ... } */
 export function resp(stem: string, widths: number[]): Record<number, string> {
   return Object.fromEntries(widths.map((w) => [w, media(`${stem}-${w}.webp`)]));

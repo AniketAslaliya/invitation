@@ -1027,3 +1027,118 @@ html {
 [data-split] .word {
   white-space: nowrap;
 }
+
+/* ---------------------------------------------------------------- envelope (lightweight) */
+
+/* Both artworks share one measured box; animation only touches transform + opacity. */
+.hero-plate {
+  position: absolute;
+  max-width: none;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.hero-scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+.env-sprites {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.env-card {
+  will-change: transform;
+}
+.env-flap {
+  will-change: transform;
+}
+.seal-pulse {
+  animation: seal-pulse 2.4s ease-in-out infinite;
+}
+@keyframes seal-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+.hint-bob {
+  display: inline-block;
+  animation: hint-bob 1.6s ease-in-out infinite;
+}
+@keyframes hint-bob {
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+/* Foreground branches: a slow CSS sway (no per-frame JavaScript). */
+.hero-branch {
+  position: absolute;
+  z-index: 2;
+  max-width: none;
+  pointer-events: none;
+  will-change: transform;
+}
+.hero-branch.branch-left {
+  transform-origin: 0 0;
+  animation: sway-l 7s ease-in-out infinite;
+}
+.hero-branch.branch-right {
+  transform-origin: 100% 0;
+  animation: sway-r 8s ease-in-out infinite;
+}
+
+/* A few drifting petals — pure CSS keyframes on the compositor. */
+.amb-petals {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.amb-petal {
+  position: absolute;
+  top: -8%;
+  width: 7%;
+  max-width: 34px;
+  height: auto;
+  will-change: transform;
+  animation: petal-fall linear infinite;
+}
+.amb-petal.p0 { left: 12%; animation-duration: 11s; animation-delay: -2s; }
+.amb-petal.p1 { left: 34%; animation-duration: 14s; animation-delay: -9s; width: 5%; }
+.amb-petal.p2 { left: 58%; animation-duration: 12s; animation-delay: -5s; }
+.amb-petal.p3 { left: 76%; animation-duration: 15s; animation-delay: -12s; width: 5.5%; }
+.amb-petal.p4 { left: 90%; animation-duration: 13s; animation-delay: -7s; width: 4.5%; }
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(18px, 30vh, 0) rotate(120deg);
+  }
+  50% {
+    transform: translate3d(-14px, 60vh, 0) rotate(220deg);
+  }
+  75% {
+    transform: translate3d(16px, 88vh, 0) rotate(310deg);
+  }
+  100% {
+    transform: translate3d(-6px, 116vh, 0) rotate(400deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .amb-petals,
+  .seal-pulse {
+    display: none;
+  }
+}

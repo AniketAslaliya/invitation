@@ -1,7 +1,7 @@
 import heroManifest from '../../public/media/hero/manifest.json';
 import envManifest from '../../public/media/envelope/manifest.json';
 import { ART } from '../lib/media';
-import type { LayerLayout, LayerSpec, ParticleSpec } from '../parallax/types';
+import type { LayerLayout, LayerSpec } from '../parallax/types';
 
 export const PLATE_W = heroManifest['plate-closed'].w;
 export const PLATE_H = heroManifest['plate-closed'].h;
@@ -108,15 +108,6 @@ export const heroLayers: LayerSpec[] = [
   },
 ];
 
-export const petals: ParticleSpec = {
-  textures: ART.petals,
-  count: { mobile: 5, desktop: 10 },
-  size: [16, 40],
-  speed: [26, 52],
-  drift: 36,
-  spin: 50,
-  opacity: [0.75, 1],
-};
 
 /** Envelope sprite geometry as fractions of the closed-envelope plate. */
 const pct = (v: number, of: number) => (v / of) * 100;

@@ -12,7 +12,6 @@ import { Page } from './components/Page/Page';
 import { HERO_HOLD, RoyalHero } from './components/RoyalHero/RoyalHero';
 import { WeddingTimeline } from './components/WeddingTimeline/WeddingTimeline';
 import { ceremonies } from './data/ceremonies';
-import { CapabilitiesProvider } from './lib/capabilities';
 
 /**
  * One page per screen. Native scroll-snap moves exactly one page per swipe (identical on iOS and
@@ -64,9 +63,7 @@ function Experience() {
 export default function App() {
   return (
     <MotionConfig reducedMotion="user">
-      <CapabilitiesProvider>
-        <Experience />
-      </CapabilitiesProvider>
+      <Experience />
     </MotionConfig>
   );
 }
