@@ -18,7 +18,7 @@ npm run preview
 
 All in `src/data/siteConfig.ts`:
 
-- **Venue**: Lion Valley Resort, Malanka, Junagadh. Directions, Apple Maps, the map preview and copy-address are all built from `venue.name` + `venue.addressLines`. Paste an exact Google Maps share link into `venue.mapsUrl` to pin it precisely.
+- **Venue**: Lion Valley Resort, Malanka, Gujarat. The venue page is a full-page artwork (`venue/page`); tapping the map-pin icon in it opens Google Maps, using a link built from `venue.name` + `venue.addressLines`. Paste an exact Google Maps share link into `venue.mapsUrl` to pin it precisely.
 - **Music**: put an audio file you have the rights to use in `public/` (e.g. `public/music/shehnai.mp3`) and set `music.src: '/music/shehnai.mp3'`. The play/pause control appears automatically. It never autoplays.
 
 Event dates, times and titles live only in `src/data/weddingEvents.ts`. Weekdays, the countdown and all labels are derived from it, always in Asia/Kolkata time.

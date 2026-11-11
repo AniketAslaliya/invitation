@@ -65,6 +65,8 @@ export const ART = {
   /** Full-page (9:16) ceremony invitations. */
   eventPage: (id: string) => resp(`events/${id}-full`, [720, 1080, 1440]),
   storyPage: resp('story/page', [720, 941]),
+  /** Full-page (9:16) venue card with the map-pin icon. */
+  venuePage: resp('venue/page', [720, 1080, 1440]),
   ornament: (name: string) => media(`ornaments/${name}`),
   ganesha: media('ornaments/ganesha.webp'),
   parchment: media('textures/parchment.webp'),

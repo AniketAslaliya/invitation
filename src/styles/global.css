@@ -817,143 +817,21 @@ html {
   white-space: nowrap;
 }
 
-/* ---------------------------------------------------------------- location */
+/* ---------------------------------------------------------------- venue */
 
-/* The venue page fits exactly one screen on every phone: the map takes whatever height is left. */
-.location {
-  position: relative;
-  height: 100vh;
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  padding: calc(10px + var(--safe-top)) 12px calc(14px + var(--safe-bottom));
-  background: var(--burgundy-deep);
-}
-.location .arch-cap {
-  display: block;
-  flex-shrink: 0;
-  width: 100%;
-  height: clamp(54px, 9svh, 96px);
-  margin-bottom: -1px;
-}
-.location-body {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 4px 16px 14px;
-  text-align: center;
-  color: var(--ink);
-  background-color: var(--parchment);
-  background-image:
-    radial-gradient(ellipse at 50% 30%, rgba(255, 246, 225, 0.65), transparent 70%),
-    linear-gradient(transparent, rgba(160, 110, 50, 0.12));
-  border-left: 1.5px solid var(--gold);
-  border-right: 1.5px solid var(--gold);
-  border-bottom: 1.5px solid var(--gold);
-}
-.location-body .divider {
-  margin: clamp(6px, 1.4svh, 14px) auto;
-}
-.location-eyebrow {
-  color: #8a5a2a;
-  margin-top: 8px;
-}
-.location-name {
-  font-family: var(--font-caps);
-  font-weight: 400;
-  color: var(--maroon);
-  letter-spacing: 0.1em;
-  font-size: clamp(21px, min(6.6vw, 3.4svh), 30px);
-  line-height: 1.2;
-  margin: 6px 0 4px;
-}
-.location-address {
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 20px;
-  line-height: 1.45;
-  color: #4a1a1f;
-  text-decoration: underline;
-  text-decoration-color: rgba(199, 155, 81, 0.6);
-  text-underline-offset: 5px;
-}
-.location-note {
-  font-size: 16px;
-  color: #6b3a2a;
-  margin: 8px 0 0;
-}
-.location-soon {
-  font-size: 22px;
-  font-style: italic;
-  color: #4a1a1f;
-}
-.location-map {
-  position: relative;
-  flex: 1;
-  min-height: 150px;
-  width: 100%;
-  border: 1px solid rgba(199, 155, 81, 0.85);
-  box-shadow: 0 0 0 4px rgba(199, 155, 81, 0.15);
-  background: #e9dcc0;
-  overflow: hidden;
-}
-.location-map iframe {
+/* Tap area over the map-pin icon in the venue artwork (pin + island sit at ~27–43% x, ~10–21% y). */
+.venue-pin {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  pointer-events: none;
-}
-/* Covers the map: swipes scroll the page, a tap opens the venue in the Maps app. */
-.map-open {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 10px;
-  text-decoration: none;
+  left: 25.5%;
+  top: 9.3%;
+  width: 19%;
+  height: 12.6%;
+  border-radius: 50%;
   -webkit-tap-highlight-color: transparent;
 }
-.map-open-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  min-height: 36px;
-  background: rgba(36, 5, 13, 0.88);
-  color: var(--champagne);
-  border: 1px solid rgba(233, 200, 137, 0.7);
-  font-family: var(--font-caps);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.location-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  margin-top: clamp(10px, 1.8svh, 18px);
-  flex-shrink: 0;
-}
-.location-actions .btn-royal {
-  width: 100%;
-  max-width: 320px;
-}
-.location-secondary {
-  display: flex;
-  gap: 18px;
-  justify-content: center;
-}
-.location-secondary .btn-quiet {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--maroon);
-  min-height: 44px;
+.venue-pin:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 /* ---------------------------------------------------------------- music */

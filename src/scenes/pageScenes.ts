@@ -10,9 +10,10 @@ export const CLOSING_PAGE_ASPECT = p['closing/couple'].w / p['closing/couple'].h
 export const PAGE_EDGES = {
   story: { top: '#9b3d32', bottom: '#a03d32' },
   engagement: { top: '#3a648d', bottom: '#37618a' },
-  mandap: { top: '#a97d1b', bottom: '#a87b16' },
-  haldi: { top: '#ac7a19', bottom: '#ad7815' },
+  mandap: { top: '#bc994d', bottom: '#ac944c' },
+  haldi: { top: '#b58022', bottom: '#ad7815' },
   garba: { top: '#93271f', bottom: '#93251d' },
-  wedding: { top: '#f3c39a', bottom: '#eacda4' },
+  wedding: { top: '#f3c49b', bottom: '#e9cda4' },
+  venue: { top: '#f6f1ed', bottom: '#c5a58e' },
   closing: { top: '#945860', bottom: '#000000' },
 } as const;

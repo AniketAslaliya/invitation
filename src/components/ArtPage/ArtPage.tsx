@@ -13,6 +13,8 @@ interface Props {
   fx?: keyof typeof FX_PRESETS;
   /** Fill the whole screen (for unframed photos); framed artwork stays fully visible otherwise. */
   cover?: boolean;
+  /** Positioned over the artwork itself (e.g. a tap area on an icon in the picture). */
+  overlay?: React.ReactNode;
   children?: React.ReactNode;
 }
 
@@ -21,7 +23,7 @@ interface Props {
  * is never cropped, with the space around it filled by the artwork's own border colours. The box is
  * exactly the artwork's size, so per-event effects line up with the picture on every phone.
  */
-export function ArtPage({ src, aspect, alt, edges, fx, cover, children }: Props) {
+export function ArtPage({ src, aspect, alt, edges, fx, cover, overlay, children }: Props) {
   return (
     <div className={`art-page ${cover ? 'cover' : ''}`} style={{ background: `linear-gradient(${edges.top}, ${edges.bottom})` }}>
       <div className="art-box" style={{ '--a': String(aspect) } as React.CSSProperties}>
@@ -36,6 +38,7 @@ export function ArtPage({ src, aspect, alt, edges, fx, cover, children }: Props)
           decoding="async"
         />
         {fx && <PageFX {...FX_PRESETS[fx]} />}
+        {overlay}
       </div>
       {children}
     </div>

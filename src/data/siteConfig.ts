@@ -27,7 +27,7 @@ export const siteConfig: { couple: { bride: string; groom: string; monogram: str
   },
   venue: {
     name: 'Lion Valley Resort',
-    addressLines: ['Malanka, Junagadh', 'Gujarat, India'],
+    addressLines: ['Near Madhuvanti Dam, SH 26, Gir Forest', 'Sasan Road, Malanka', 'Gujarat 362260'],
     mapsUrl: '',
     note: '',
   },

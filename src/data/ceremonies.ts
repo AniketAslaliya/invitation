@@ -31,7 +31,7 @@ const presentation: Record<WeddingEventData['id'], Omit<Ceremony, keyof WeddingE
     tagline: 'Where our forever begins.',
     theme: { deep: '#4a0c26', mid: '#7a1a45', accent: '#E9C889', ink: '#FFF1D5' },
     artAlt:
-      "Engagement invitation — A promise for forever. A beautiful beginning to a shared journey. 12 December 2026, 08:00 AM onwards, Lion Valley Resort. A sunlit garden mandap hung with marigold garlands.",
+      "Engagement invitation — A promise for forever. A morning of love, traditions and beautiful beginnings. 12 December 2026, 08:00 AM onwards, Lion Valley Resort. A sunlit garden mandap hung with marigold garlands, beside a parasol and brass urns.",
   },
   mandap: {
     numeral: 'II',
@@ -39,7 +39,7 @@ const presentation: Record<WeddingEventData['id'], Omit<Ceremony, keyof WeddingE
     tagline: 'An auspicious beginning, blessed with love and tradition.',
     theme: { deep: '#0b2a1d', mid: '#123D2B', accent: '#E9C889', ink: '#FFF1D5' },
     artAlt:
-      "Mandap invitation — With cherished rituals and the blessings of loved ones, we celebrate the sacred union marking the new beginning. 12 December 2026, 09:30 AM onwards, Lion Valley Resort. A garden with pink drapes, flowers and a parasol.",
+      "Mandap invitation — Where traditions carry love and every blessing becomes a cherished memory. 12 December 2026, 09:30 AM onwards, Lion Valley Resort. Shrinathji among lotus flowers and banana leaves, under pink drapes.",
   },
   haldi: {
     numeral: 'III',
@@ -47,7 +47,7 @@ const presentation: Record<WeddingEventData['id'], Omit<Ceremony, keyof WeddingE
     tagline: 'A little sunshine, a lot of laughter, and a celebration of love.',
     theme: { deep: '#6a3306', mid: '#a2560c', accent: '#FFE2A2', ink: '#FFF6E3' },
     artAlt:
-      "Haldi Carnival invitation — A splash of joy. A vibrant celebration of colours, laughter and new beginnings. 12 December 2026, 4:00 PM onwards, Lion Valley Resort. Yellow drapes, banana trees and bowls of turmeric and flowers.",
+      "Haldi Carnival invitation — A splash of joy. A golden afternoon of colours, music, laughter and memories in making. 12 December 2026, 3:30 PM onwards, Lion Valley Resort. A couple dancing in a garden courtyard beneath hanging dhol drums.",
   },
   garba: {
     numeral: 'IV',
@@ -55,7 +55,7 @@ const presentation: Record<WeddingEventData['id'], Omit<Ceremony, keyof WeddingE
     tagline: 'An evening of rhythm, tradition, and unforgettable memories.',
     theme: { deep: '#051326', mid: '#071B31', accent: '#E9C889', ink: '#FFF1D5' },
     artAlt:
-      "Garba Night invitation — A night of rhythm and joy. Let's come together for an evening of music, dance and vibrant celebrations. 12 December 2026, 08:00 PM onwards, Lion Valley Resort. A palace courtyard with red drapes, brass lanterns and dandiya sticks.",
+      "Garba Night invitation — A night of rhythm and joy. Where traditions come alive, hearts find rhythm and every step becomes a celebration. 12 December 2026, 07:00 PM onwards, Lion Valley Resort. A palace courtyard with red drapes, brass lanterns and dandiya sticks.",
   },
   wedding: {
     numeral: 'V',
@@ -63,7 +63,7 @@ const presentation: Record<WeddingEventData['id'], Omit<Ceremony, keyof WeddingE
     tagline: 'Two souls, one sacred promise, and a lifetime of togetherness.',
     theme: { deep: '#2c0510', mid: '#430918', accent: '#E9C889', ink: '#FFF1D5' },
     artAlt:
-      "The Wedding Day invitation — Sunday 13 December 2026 at 4:00 PM. A floral mandap by the sea under palm trees at sunset, with a chandelier above.",
+      "The Wedding Day invitation — Two paths, one destination, countless tomorrows. 13 December 2026, 4:00 PM, Lion Valley Resort. A floral mandap by the sea under palm trees at sunset, with a chandelier above.",
   },
 };
 
